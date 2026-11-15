@@ -4,6 +4,7 @@
     "products": [
       {
         "name": "default",
+        "compileSdkVersion": 26,
         "compatibleSdkVersion": 20,
         "runtimeOS": "OpenHarmony"
       }
