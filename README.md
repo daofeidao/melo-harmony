@@ -71,6 +71,22 @@ entry/build/default/outputs/default/entry-default-unsigned.hap
 > 华为开发者账号（调试证书还会绑定设备 UDID），这一步只能在你的机器上做，
 > 我没法代签，也不会去碰你的账号。
 
+### 工程里的 SDK 配置是 OpenHarmony 的
+
+CI 用的是 OpenHarmony 7.0 官方 SDK（API 26），所以 `build-profile.json5` 写的是：
+
+```json5
+"compileSdkVersion": "26.0.0",
+"compatibleSdkVersion": "26.0.0",
+"runtimeOS": "OpenHarmony"
+```
+
+用 DevEco Studio 打开时，如果你装的是**华为 HarmonyOS SDK**，把这一段换成
+DevEco 提示的版本 + `"runtimeOS": "HarmonyOS"` 即可（DevEco 一般会自动提示并帮你改）。
+Android 的 `deviceTypes` 对应鸿蒙这边是 `["default", "tablet"]`
+（OpenHarmony SDK 的 `device-define` 里没有 `phone`，写 `phone` 会直接编译失败）。
+
+
 ## 已知限制（0.1.0）
 
 - 只有网易云匿名链路：VIP / 无版权曲目会 404，播放器会提示「这首可能没版权或需要会员」。
