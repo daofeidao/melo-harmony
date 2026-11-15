@@ -51,7 +51,7 @@ export struct HomeTab {
             ForEach(this.liked, (name: string) => {
               ArtistTile({
                 name: name,
-                size: 76,
+                diameter: 76,
                 onTap: (n: string) => {
                   this.onOpenArtist(n);
                 },

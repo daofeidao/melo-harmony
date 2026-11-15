@@ -114,7 +114,7 @@ export struct TrackRow {
 @Component
 export struct ArtistTile {
   private name: string = '';
-  private size: number = 76;
+  private diameter: number = 76;
   private onTap: (name: string) => void = () => {
   };
   private onLongPress: (name: string) => void = () => {
@@ -135,20 +135,20 @@ export struct ArtistTile {
       Stack() {
         if (this.cover.length > 0) {
           Image(this.cover)
-            .width(this.size)
-            .height(this.size)
-            .borderRadius(this.size / 2)
+            .width(this.diameter)
+            .height(this.diameter)
+            .borderRadius(this.diameter / 2)
             .objectFit(ImageFit.Cover)
         } else {
           Text(this.name.length > 0 ? this.name.charAt(0) : '?')
-            .fontSize(this.size * 0.36)
+            .fontSize(this.diameter * 0.36)
             .fontColor('#FFFFFF')
             .fontWeight(FontWeight.Medium)
         }
       }
-      .width(this.size)
-      .height(this.size)
-      .borderRadius(this.size / 2)
+      .width(this.diameter)
+      .height(this.diameter)
+      .borderRadius(this.diameter / 2)
       .backgroundColor(this.cover.length > 0 ? '#00000000' : this.fallbackColor())
       .clip(true)
 
@@ -157,7 +157,7 @@ export struct ArtistTile {
         .fontColor(Palette.secondary)
         .maxLines(1)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
-        .width(this.size + 8)
+        .width(this.diameter + 8)
         .textAlign(TextAlign.Center)
     }
     .onClick(() => {
