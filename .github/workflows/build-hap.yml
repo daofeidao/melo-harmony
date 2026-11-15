@@ -52,7 +52,13 @@ jobs:
           echo "sdk.dir=$GITHUB_WORKSPACE/sdk" > local.properties
           echo "nodejs.dir=$(dirname $(dirname $(which node)))" >> local.properties
           cat local.properties
-          cat sdk/ets/oh-uni-package.json 2>/dev/null || true
+          echo "---- sdk tree (2 levels) ----"
+          find sdk -maxdepth 2 -type d | sort | head -40
+          echo "---- package json ----"
+          find sdk -maxdepth 3 -name "*.json" | sort | head -20
+          for f in $(find sdk -maxdepth 3 -name "oh-uni-package.json" -o -maxdepth 3 -name "sdk-pkg.json"); do
+            echo "== $f"; cat "$f"; echo;
+          done
 
       - name: Install hvigor
         run: |
