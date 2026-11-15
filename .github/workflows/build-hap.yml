@@ -1,7 +1,7 @@
 name: Build HAP
 
 # 云端出包：本地不用下 3.4 GB SDK。
-# 注意：产物是**未签名 HAP**；装到手机仍需用你自己的华为账号在 DevEco 里签名。
+# 产物是**未签名 HAP**；装到手机仍需用你自己的华为账号在 DevEco 里签名。
 on:
   workflow_dispatch:
     inputs:
@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: sdk
-          key: ohos-sdk-7.0-linux-v2
+          key: ohos-sdk-7.0-api26-layout-v1
 
       - name: Download & unpack SDK (linux)
         if: steps.sdk-cache.outputs.cache-hit != 'true'
@@ -37,13 +37,37 @@ jobs:
           ls -lh sdk.tar.gz
           tar -xzf sdk.tar.gz ohos-sdk/linux
           rm -f sdk.tar.gz
-          mkdir -p sdk
+
+          mkdir -p staging sdk
           cd ohos-sdk/linux
-          ls -lh
-          for z in *.zip; do unzip -q -o "$z" -d "$GITHUB_WORKSPACE/sdk"; done
+          for z in *.zip; do unzip -q -o "$z" -d "$GITHUB_WORKSPACE/staging"; done
           cd "$GITHUB_WORKSPACE"
           rm -rf ohos-sdk
-          ls -la sdk
+
+          # API 26 起 SDK 必须是 <sdk>/<版本>/<组件> 布局，平铺会被判「管理模式已变更」。
+          # 按每个组件自己的 oh-uni-package.json 里的路径与版本号归位。
+          node - <<'JS'
+          const fs = require('fs');
+          const path = require('path');
+          const staging = 'staging';
+          const out = 'sdk';
+          for (const name of fs.readdirSync(staging)) {
+            const dir = path.join(staging, name);
+            if (!fs.statSync(dir).isDirectory()) continue;
+            const pkg = path.join(dir, 'oh-uni-package.json');
+            if (!fs.existsSync(pkg)) continue;
+            const json = JSON.parse(fs.readFileSync(pkg, 'utf8'));
+            const api = json.fullApiVersion || json.platformVersion || String(json.apiVersion);
+            const rel = (json.path || name).replace(/,/g, path.sep);
+            const dest = path.join(out, api, rel);
+            fs.mkdirSync(path.dirname(dest), { recursive: true });
+            fs.renameSync(dir, dest);
+            console.log('moved', name, '->', dest);
+          }
+          JS
+
+          rm -rf staging
+          find sdk -maxdepth 3 -name oh-uni-package.json | sort
           df -h .
 
       - name: Configure SDK path
@@ -52,13 +76,7 @@ jobs:
           echo "sdk.dir=$GITHUB_WORKSPACE/sdk" > local.properties
           echo "nodejs.dir=$(dirname $(dirname $(which node)))" >> local.properties
           cat local.properties
-          echo "---- sdk tree (2 levels) ----"
-          find sdk -maxdepth 2 -type d | sort | head -40
-          echo "---- package json ----"
-          find sdk -maxdepth 3 -name "*.json" | sort | head -20
-          for f in $(find sdk -maxdepth 3 -name "oh-uni-package.json" -o -maxdepth 3 -name "sdk-pkg.json"); do
-            echo "== $f"; cat "$f"; echo;
-          done
+          find sdk -maxdepth 2 -type d | sort | head -20
 
       - name: Install hvigor
         run: |
