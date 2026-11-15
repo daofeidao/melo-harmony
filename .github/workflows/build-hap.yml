@@ -55,7 +55,11 @@ jobs:
           cat sdk/ets/oh-uni-package.json 2>/dev/null || true
 
       - name: Install hvigor
-        run: npm i --no-audit --no-fund --registry=https://repo.harmonyos.com/npm/
+        run: |
+          # @ohos/* 走华为镜像，其余包走 npmjs（镜像里没有 magic-string 这类通用包）
+          npm i --no-audit --no-fund \
+            --registry=https://registry.npmjs.org/ \
+            --@ohos:registry=https://repo.harmonyos.com/npm/
 
       - name: Build HAP
         run: |
