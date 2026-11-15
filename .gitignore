@@ -1,0 +1,11 @@
+node_modules/
+oh_modules/
+build/
+.hvigor/
+.cxx/
+.idea/
+local.properties
+*.hap
+*.hsp
+*.har
+*.zip

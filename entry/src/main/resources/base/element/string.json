@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Melo 音乐播放器"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Melo 主界面"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Melo"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "modelVersion": "6.0.0",
+  "name": "melo-harmony",
+  "version": "0.1.0",
+  "description": "Melo 鸿蒙版",
+  "main": "",
+  "author": "daofeidao",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "@ohos/hvigor": "6.26.20",
+    "@ohos/hvigor-ohos-plugin": "6.26.20"
+  }
+}
