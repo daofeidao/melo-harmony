@@ -77,6 +77,7 @@ jobs:
           echo "nodejs.dir=$(dirname $(dirname $(which node)))" >> local.properties
           cat local.properties
           find sdk -maxdepth 2 -type d | sort | head -20
+          ls sdk/26.0.0/ets/api/device-define 2>/dev/null || true
 
       - name: Install hvigor
         run: |
