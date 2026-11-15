@@ -52,9 +52,9 @@ export struct LibraryTab {
             })
           }, (track: Track) => track.id)
         }
-        Row().height(24)
       }
       .width('100%')
+      .padding({ bottom: 28 })
       .alignItems(HorizontalAlign.Start)
     }
     .width('100%')

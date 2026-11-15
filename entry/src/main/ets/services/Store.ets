@@ -16,6 +16,7 @@ export class Store {
   private static recentCache: Track[] = [];
   private static likedCache: string[] = [];
   private static readyDone: boolean = false;
+  private static initPromise: Promise<void> | null = null;
 
   private static readonly KEY_FAVORITES: string = 'favorites';
   private static readonly KEY_RECENT: string = 'recent';
@@ -40,7 +41,14 @@ export class Store {
 
   private static readonly SEED_ARTISTS: string[] = ['周杰伦', '周传雄', '林俊杰', '张学友'];
 
-  static async init(context: common.Context): Promise<void> {
+  static init(context: common.Context): Promise<void> {
+    if (Store.initPromise === null) {
+      Store.initPromise = Store.doInit(context);
+    }
+    return Store.initPromise;
+  }
+
+  private static async doInit(context: common.Context): Promise<void> {
     if (Store.readyDone) {
       return;
     }

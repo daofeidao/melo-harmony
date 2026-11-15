@@ -1,0 +1,72 @@
+name: Build HAP
+
+# 云端出包：本地不用下 3.4 GB SDK。
+# 注意：产物是**未签名 HAP**；装到手机仍需用你自己的华为账号在 DevEco 里签名。
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "上传 HAP 产物"
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache OpenHarmony SDK
+        id: sdk-cache
+        uses: actions/cache@v4
+        with:
+          path: sdk
+          key: ohos-sdk-7.0-linux-v2
+
+      - name: Download & unpack SDK (linux)
+        if: steps.sdk-cache.outputs.cache-hit != 'true'
+        run: |
+          set -eux
+          curl -L --retry 3 --retry-delay 5 -o sdk.tar.gz \
+            https://repo.huaweicloud.com/harmonyos/os/7.0-Release/ohos-sdk-windows_linux-public.tar.gz
+          ls -lh sdk.tar.gz
+          tar -xzf sdk.tar.gz ohos-sdk/linux
+          rm -f sdk.tar.gz
+          mkdir -p sdk
+          cd ohos-sdk/linux
+          ls -lh
+          for z in *.zip; do unzip -q -o "$z" -d "$GITHUB_WORKSPACE/sdk"; done
+          cd "$GITHUB_WORKSPACE"
+          rm -rf ohos-sdk
+          ls -la sdk
+          df -h .
+
+      - name: Configure SDK path
+        run: |
+          set -eux
+          echo "sdk.dir=$GITHUB_WORKSPACE/sdk" > local.properties
+          echo "nodejs.dir=$(dirname $(dirname $(which node)))" >> local.properties
+          cat local.properties
+          cat sdk/ets/oh-uni-package.json 2>/dev/null || true
+
+      - name: Install hvigor
+        run: npm i --no-audit --no-fund --registry=https://repo.harmonyos.com/npm/
+
+      - name: Build HAP
+        run: |
+          set -eux
+          node ./node_modules/@ohos/hvigor/bin/hvigor.js --mode module -p product=default assembleHap
+          find entry/build -name "*.hap"
+
+      - name: Upload artifact
+        if: inputs.publish
+        uses: actions/upload-artifact@v4
+        with:
+          name: melo-harmony-hap
+          path: entry/build/**/*.hap
+          if-no-files-found: error

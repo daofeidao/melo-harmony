@@ -129,9 +129,9 @@ export struct HomeTab {
           }
         }
 
-        Row().height(24)
       }
       .width('100%')
+      .padding({ bottom: 28 })
       .alignItems(HorizontalAlign.Start)
     }
     .width('100%')

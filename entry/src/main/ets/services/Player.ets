@@ -40,7 +40,7 @@ export class Player {
       return this.avPlayer;
     }
     const p: media.AVPlayer = await media.createAVPlayer();
-    p.on('stateChange', (state: string) => {
+    p.on('stateChange', (state: media.AVPlayerState) => {
       this.handleState(state, p);
     });
     p.on('timeUpdate', (time: number) => {

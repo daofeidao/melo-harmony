@@ -42,7 +42,7 @@ export struct TrackRow {
     artwork: '', source: '', sourceId: ''
   };
   private index: number = 0;
-  private favorite: boolean = false;
+  @Prop favorite: boolean = false;
   private onTap: (track: Track) => void = () => {
   };
   private onToggleFavorite: (track: Track) => void = () => {

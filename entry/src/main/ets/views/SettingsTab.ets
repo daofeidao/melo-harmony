@@ -94,10 +94,9 @@ export struct SettingsTab {
           .fontColor(Palette.tertiary)
           .padding({ left: 4, right: 4, top: 6 })
 
-        Row().height(24)
       }
       .width('100%')
-      .padding({ left: Sizes.pagePadding, right: Sizes.pagePadding })
+      .padding({ left: Sizes.pagePadding, right: Sizes.pagePadding, bottom: 28 })
       .alignItems(HorizontalAlign.Start)
     }
     .width('100%')
